@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  .navbar
+    .navbar-inner
+      a.brand.ocs-title(href='#') Odysseus TRPG System
+      ul.nav
+        li: a(href='/')
+          i.icon-list
+          = ' 频道列表'
+        li.active: a(href='#')
+          i.icon-hdd
+          = ' 删除频道'
+      ul.nav.pull-right
+        li.dropdown
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+            i.icon-user
+            = ' ' + session.username
+            b.caret
+          ul.dropdown-menu
+            li: a(href='/logout') 注销
+  .container
+    h3 你确定你要删除频道【#{channel.fullName}】么？
+    form.form-horizontal(method='POST')
+      .control-group
+        .controls
+          button.btn.btn-primary(type='submit') 确定，我知道我在做什么
+      

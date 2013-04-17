@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .navbar
+    .navbar-inner
+      a.brand.ocs-title(href='#') Odysseus TRPG System
+      ul.nav
+        li: a(href='/')
+          i.icon-list
+          = ' 频道列表'
+        li.active: a(href='#')
+          i.icon-warning-sign
+          = ' 错误提示'
+      ul.nav.pull-right
+        li.dropdown
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+            i.icon-user
+            = ' ' + session.username
+            b.caret
+          ul.dropdown-menu
+            li: a(href='/logout') 注销
+  .container
+    .row
+      .span8.offset2
+        .well.clearfix
+          p.lead= message
+          a.btn.btn-warning.pull-right(href='#', onclick='javascript:history.go(-1);return;') 返回上一页

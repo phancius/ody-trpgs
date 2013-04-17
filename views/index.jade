@@ -1,0 +1,94 @@
+extends layout
+
+block head
+  link(href="/datatables/DT_bootstrap.css", rel="stylesheet")
+  script(src="/datatables/jquery.dataTables.min.js")
+  script(src="/datatables/DT_bootstrap.js")
+
+block content
+  .navbar
+    .navbar-inner
+      a.brand.ocs-title(href='#') Odysseus TRPG System
+      ul.nav
+        li.active: a(href='/')
+          i.icon-list
+          = ' 频道列表'
+        if session.admin
+          li: a(href='/add')
+            i.icon-plus
+            = ' 新建频道'
+      ul.nav.pull-right
+        li.dropdown
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+            i.icon-user
+            = ' ' + session.username
+            b.caret
+          ul.dropdown-menu
+            li: a(href='/logout') 注销
+  .container
+    table.table.table-hover#ody-channel-list
+      thead
+        tr
+          th 频道
+          th 一句话公告
+          th 主持人
+          th 最近活动日
+          th 在线
+          th 
+      tbody
+        each v, name in channel
+          tr
+            td= v.fullName
+            td= v.announcement
+            td= v.master
+            td= v.lastActiveDate
+            if name in active
+              td= active[name].online
+            else
+              td= 0
+            td
+              if session.admin || (session.username in v.member)
+                a.ody-tip.btn.btn-info(data-toggle='tooltip', title='进入', href='/chat/#{name}'): i.icon-arrow-right
+              else
+                a.ody-tip.btn.btn-success(data-toggle='tooltip', title='围观', href='/chat/#{name}'): i.icon-eye-open
+              = ' '
+              a.ody-tip.btn.btn-warning(data-toggle='tooltip', title='日志', href='/logs/#{name}'): i.icon-book
+              if session.admin || (session.username === v.master)
+                = ' '
+                a.ody-tip.btn.btn-danger(data-toggle='tooltip', href='/configure/#{name}', title='配置'): i.icon-wrench
+                = ' '
+                a.ody-tip.btn.btn-inverse(data-toggle='tooltip', title='删除', href='/delete/#{name}'): i.icon-hdd.icon-white
+  script
+    function dateToString(d){
+      d = new Date(d)
+      function pad(n){return n<10 ? '0'+n : n}
+      return d.getFullYear()+'-'
+          + pad(d.getMonth()+1)+'-'
+          + pad(d.getDate())
+    }
+    $(function() {
+      $('.ody-tip').tooltip()
+      $('#ody-channel-list').dataTable({
+        aoColumnDefs: [
+          { aTargets: [-1]
+          , bSortable: false
+          , bSearchable: false
+          , sWidth: '172px'
+          }
+        , { aTargets: [-2]
+          , sWidth: '40px'
+          }
+        , { aTargets: [-3]
+          , sWidth: '100px'
+          , mRender: function(d, t) {
+              d = parseInt(d)
+              return t === 'display' || t === 'filter' ? dateToString(d):d
+            }
+          }
+        , { aTargets: [-4]
+          , sWidth: '50px'
+          }
+        ]
+      }).fnSort([[3, 'desc'], [0, 'asc']])
+    })
+      

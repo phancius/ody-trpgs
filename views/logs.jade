@@ -1,0 +1,39 @@
+extends layout
+
+block head
+  script(src="/javascripts/utils.js")
+  script
+    var username = '#{session.username}'
+      , channel = JSON.parse('!{JSON.stringify(channel)}')
+    channel.member['#system'] = {color: '#666666'}
+    $(function() {
+      $.get('/logs/#{name}', {raw: true}, function(result) {
+        _(result.split('\n')).each(function(row) {
+          var log = row.split('\t')
+          log[0] = parseInt(log[0])
+          $('#logs').appendLog(log, username, channel, true)
+        })
+      })
+    })
+
+block content
+  .navbar.navbar-fixed-top
+    .navbar-inner
+      a.brand.ocs-title(href='#') Odysseus TRPG System
+      ul.nav
+        li: a(href='/')
+          i.icon-list
+          = ' 频道列表'
+        li.active: a(href='#')
+          i.icon-book
+          = ' ' + channel.fullName
+      ul.nav.pull-right
+        li.dropdown
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+            i.icon-user
+            = ' ' + session.username
+            b.caret
+          ul.dropdown-menu
+            li: a(href='/logout') 注销
+  .container.ody-chat-log
+    .row#logs

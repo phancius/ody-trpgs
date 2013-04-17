@@ -1,0 +1,10 @@
+{
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "1",
+    "insecureAuth": true,
+    "charset": "GBK"
+  },
+  "usertable": "ultrax.pre_ucenter_members"
+}

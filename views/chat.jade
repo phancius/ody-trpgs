@@ -1,0 +1,58 @@
+extends layout
+
+block head
+  script(src="/javascripts/socket.io.min.js")
+  script(src="/javascripts/utils.js")
+  script(src="/javascripts/ody.chat.js")
+  script
+    var chatPath = '/chat/#{name}'
+
+    var username = '#{session.username}'
+      , channel = JSON.parse('!{JSON.stringify(channel)}')
+      , activeMember = JSON.parse('!{JSON.stringify(activeMember)}')
+    
+    channel.member['#system'] = {color: '#666666'}
+
+block content
+  .navbar.navbar-fixed-top
+    .navbar-inner
+      a.brand.ocs-title(href='#') Odysseus TRPG System
+      ul.nav
+        li: a(href='/')
+          i.icon-list
+          = ' 频道列表'
+        li.active: a(href='/add-channel')
+          i.icon-play
+          = ' ' + channel.fullName
+      ul.nav.pull-right
+        li.dropdown
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+            i.icon-user
+            = ' ' + session.username
+            b.caret
+          ul.dropdown-menu
+            li: a(href='/logout') 注销
+  .container.ody-chat-log
+    .row
+      .span10#logs
+      .span2
+        ul.ody-member-list.affix.nav.nav-pills.nav-stacked#member-list
+  if session.username in channel.member
+    .container
+      .ody-bottom
+        .row.ody-bottom-row
+          form#inputForm
+            .input-append
+              input.span11#inputText(type='text', placeholder='在此键入话语或命令，回车发送')
+              a.ody-map-btn.btn.btn-primary(href='#ody-map-input', role='button', data-toggle='modal')
+                i.icon-map-marker.icon-white
+                | 地图
+  #ody-map-input.modal.hide.fade
+    .modal-header
+      button.close(type='button', data-dismiss='modal') &times;
+      h3 插入地图或其它多行文字
+    .modal-body
+      form
+        textarea#ody-map-input-textarea(rows="10")
+    .modal-footer
+      a#ody-map-input-btn.btn.btn-primary(href='#') 插入
